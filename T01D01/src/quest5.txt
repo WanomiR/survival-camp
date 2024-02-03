@@ -1,0 +1,5 @@
+1. Navigate to the `door_configuration` directory: 
+    `cd src/door_management/door_configuration`
+2. Open the `door_1.conf` file with vim: 
+    `vim door_1.conf`
+3. Replace "CLOSED" with "OPEN"
