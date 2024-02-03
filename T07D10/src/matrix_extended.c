@@ -5,10 +5,10 @@
 void showOptions(void);
 int inputParams(int *type, int *n, int *m);
 int inputMatrix(int **M, int n, int m);
-int staticAllocation(int n, int m);
-int arrayOfPointersToArrays(int **M, int n, int m);
-int arrayOfPointersToSegments(int **M, int n, int m);
-int pointersToSegmentsWithOneBuffer(int **M, int n, int m);
+void staticAllocation(int n, int m);
+void arrayOfPointersToArrays(int **M, int n, int m);
+void arrayOfPointersToSegments(int **M, int n, int m);
+void pointersToSegmentsWithOneBuffer(int **M, int n, int m);
 void output(int **M, int n, int m);
 void outputRowMaxs(int **M, int n, int m);
 void outputColumnMins(int **M, int n, int m);
@@ -16,30 +16,29 @@ void outputColumnMins(int **M, int n, int m);
 int main() {
     int type, n, m;
     int **M = 0;
-    int rv = 0;
 
     showOptions();
 
     if (inputParams(&type, &n, &m)) {
         switch (type) {
             case 1:
-                rv = staticAllocation(n, m);
+                staticAllocation(n, m);
                 break;
             case 2:
-                rv = arrayOfPointersToArrays(M, n, m);
+                arrayOfPointersToArrays(M, n, m);
                 break;
             case 3:
-                rv = arrayOfPointersToSegments(M, n, m);
+                arrayOfPointersToSegments(M, n, m);
                 break;
             case 4:
-                rv = pointersToSegmentsWithOneBuffer(M, n, m);
+                pointersToSegmentsWithOneBuffer(M, n, m);
                 break;
         }
     } else {
         printf("n/a");
     }
 
-    return rv;
+    return 0;
 }
 
 void showOptions(void) {
@@ -77,9 +76,7 @@ int inputMatrix(int **A, int n, int m) {
     return flag;
 }
 
-int staticAllocation(int n, int m) {
-    int rv = 0;
-
+void staticAllocation(int n, int m) {
     int A[n * m];
     int *a[n];
 
@@ -93,20 +90,14 @@ int staticAllocation(int n, int m) {
             outputRowMaxs(a, n, m);
             outputColumnMins(a, n, m);
         } else {
-            rv = -1;
             printf("n/a");
         }
     } else {
-        rv = -1;
         printf("n/a");
     }
-
-    return rv;
 }
 
-int arrayOfPointersToArrays(int **M, int n, int m) {
-    int rv = 0;
-
+void arrayOfPointersToArrays(int **M, int n, int m) {
     M = (int **)malloc(n * sizeof(int *));
     for (int i = 0; i < n; i++) {
         M[i] = (int *)malloc(m * sizeof(int));
@@ -118,25 +109,13 @@ int arrayOfPointersToArrays(int **M, int n, int m) {
         outputColumnMins(M, n, m);
     } else {
         printf("n/a");
-        rv = -1;
-    }
-
-    for (int i = 0; i < n; i++) {
-        free(M[i]);
-        M[i] = 0;
     }
     free(M);
-    M = 0;
-
-    return rv;
 }
 
-int arrayOfPointersToSegments(int **M, int n, int m) {
-    int rv = 0;
-    int *a = 0;
-
+void arrayOfPointersToSegments(int **M, int n, int m) {
     M = (int **)malloc(n * sizeof(int *));
-    a = malloc(n * m * sizeof(int));
+    int *a = malloc(n * m * sizeof(int));
 
     for (int i = 0; i < n; i++) {
         M[i] = &a[i * m];
@@ -148,20 +127,13 @@ int arrayOfPointersToSegments(int **M, int n, int m) {
         outputColumnMins(M, n, m);
     } else {
         printf("n/a");
-        rv = -1;
     }
 
     free(M);
     free(a);
-    M = 0;
-    a = 0;
-
-    return rv;
 }
 
-int pointersToSegmentsWithOneBuffer(int **M, int n, int m) {
-    int rv = 0;
-
+void pointersToSegmentsWithOneBuffer(int **M, int n, int m) {
     M = (int **)malloc(n * sizeof(int *) + n * m * sizeof(int));
     for (int i = 0; i < n; i++) {
         M[i] = (int *)(M + n + i * m);
@@ -173,12 +145,8 @@ int pointersToSegmentsWithOneBuffer(int **M, int n, int m) {
         outputColumnMins(M, n, m);
     } else {
         printf("n/a");
-        rv = -1;
     }
     free(M);
-    M = 0;
-
-    return rv;
 }
 
 void output(int **A, int n, int m) {
