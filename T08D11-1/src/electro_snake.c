@@ -14,9 +14,7 @@ void sort_vertical(int **matrix, int n, int m, int ***result);
     7 8 9
 */
 void sort_horizontal(int **matrix, int n, int m, int ***result);
-
 void allocate_memory(int ***matrix, int n, int m);
-// void free_memory(int ***matrix, int n);
 int input(int ***matrix, int *n, int *m);
 void output(int **matrix, int n, int m);
 void sort_array(int *array, int n, int asc);
@@ -25,48 +23,74 @@ void transpose_matrix(int **matr1, int **matr2, int n, int m);
 int main() {
     int **matrix = NULL;
     int **result = NULL;
-    int rv = 0;
     int n, m;
 
     if (input(&matrix, &n, &m)) {
+        allocate_memory(&result, n, m);
         sort_vertical(matrix, n, m, &result);
         output(result, n, m);
         printf("\n\n");
         sort_horizontal(matrix, n, m, &result);
         output(result, n, m);
     } else {
-        rv = -1;
         printf("n/a");
     }
 
+    for (int i = n; i < n; i++) {
+        free(matrix[i]);
+        free(result[i]);
+    }
     free(matrix);
-    matrix = 0;
     free(result);
-    result = 0;
 
-    return rv;
+
+    return 0;
 }
 void sort_vertical(int **matrix, int n, int m, int ***result) {
-    int asc;
-
-    allocate_memory(result, m, n);
+    int T[n * m], r[n];
+    int asc = 1;
 
     for (int i = 0; i < n; i++) {
-        asc = i % 2 == 0;
-        (*result)[i] = matrix[i];
-        sort_array((*result)[i], m, asc);
+        for (int j = 0; j < m; j++) {
+            T[m * i + j] = matrix[i][j];
+        }
+    }
+
+    sort_array(T, n * m, 1);
+
+    for (int j = 0; j < m; j++) {
+        asc = j % 2 == 0;
+        for (int i = 0; i < n; i++) {
+            r[i] = T[n * j + i];
+        }
+        sort_array(r, n, asc); 
+        for (int i = 0; i < n; i++) {
+            (*result)[i][j] = r[i];
+        }
     }
 }
 
 void sort_horizontal(int **matrix, int n, int m, int ***result) {
-    int asc;
+    int T[n * m], r[n];
+    int asc = 1;
 
-    allocate_memory(result, m, n);
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            T[m * i + j] = matrix[i][j];
+        }
+    }
+
+    sort_array(T, n * m, 1);
 
     for (int i = 0; i < n; i++) {
         asc = i % 2 == 0;
-        (*result)[i] = matrix[i];
-        sort_array((*result)[i], m, asc);
+        for (int j = 0; j < m; j++) {
+            r[j] = T[m * i + j];
+        }
+        sort_array(r, m, asc); 
+        for (int j = 0; j < m; j++) {
+            (*result)[i][j] = r[j];
+        }
     }
 }
 
