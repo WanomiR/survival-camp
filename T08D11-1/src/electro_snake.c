@@ -47,22 +47,15 @@ int main() {
     return rv;
 }
 void sort_vertical(int **matrix, int n, int m, int ***result) {
-    int asc = 1;
-    int **tmp = NULL;
+    int asc;
 
-    allocate_memory(result, n, n);
-    allocate_memory(&tmp, m, m);
+    allocate_memory(result, m, n);
 
     for (int i = 0; i < n; i++) {
+        asc = i % 2 == 0;
         (*result)[i] = matrix[i];
         sort_array((*result)[i], m, asc);
     }
-    transpose_matrix(*result, tmp, n, m);
-
-    for (int i = 0; i < m; i++) {
-        sort_array(tmp[i], n, asc);
-    }
-    transpose_matrix(tmp, *result, m, n);
 }
 
 void sort_horizontal(int **matrix, int n, int m, int ***result) {
